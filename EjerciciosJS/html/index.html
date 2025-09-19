@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objetos JS</title>
+</head>
+<body>
+    <script>
+        const persona = {
+            nombre : "Karol",
+            apellido : "Lozano",
+            edad : 19
+        };
+
+        console.log(persona.nombre);
+        console.log(persona["apellido"]);
+
+        persona.edad = 20;
+        persona["nombre"] = "Iván";
+
+        persona.carrera = "TIID";
+
+        delete persona.edad;
+
+        for(let clave in persona) {
+            console.log(clave + ": " + persona[clave]);
+        }
+
+        
+    </script>
+</body>
+</html>
