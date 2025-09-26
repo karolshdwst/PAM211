@@ -8,7 +8,6 @@ function verificaUsuario(usuario) {
         }
     })
 }
-
 //usa .then() y catch() para manejar el resultado
 verificaUsuario("admin")
     .then(res => console.log(res))//Acceso concedido
