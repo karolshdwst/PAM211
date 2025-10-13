@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
         textDecorationLine:'underline'
     },
     botonesContainer:{
-
         marginTop:20,
         flexDirection:'row', //esto hace que los botones se pongan en línea horizontal
         gap:20, //esto agrega un espacio entre los botones
