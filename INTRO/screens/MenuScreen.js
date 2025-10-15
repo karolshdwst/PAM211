@@ -6,7 +6,7 @@ import TextInput_Alert from './TextInput_Alert';
 import ImageBackground_SlapshScreen from './ImageBackground_SlapshScreen';
 import ScrollView from './ScrollView';
 import ActivityIndicator from './ActivityIndicator';
-import FlatList_SectionList from './FlatList_SectionList';
+import FlatList_SectionList from './FlatList';
 import Modal from './Modal';
 
 export default function MenuScreen() {
