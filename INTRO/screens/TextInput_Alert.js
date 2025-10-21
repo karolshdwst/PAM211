@@ -1,3 +1,5 @@
+//input de contraseña y comentario
+
 import {Text, StyleSheet, View, Platform, TextInput, Button, Alert} from 'react-native';
 import React, {useState} from 'react';
 
