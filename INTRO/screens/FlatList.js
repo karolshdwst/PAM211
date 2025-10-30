@@ -1,8 +1,8 @@
-import { Text, View, StyleSheet, FlatList } from 'react-native'
+import { Text, StyleSheet, View, FlatList, SectionList } from 'react-native'
 
-export default function FlatList_SectionList() {
-
-    const datos = [
+export default function ListScreen() {
+    // Datos para la lista simple
+    const ejercicios = [
         { id: '1', nombre: 'Sentadillas', descripcion: 'Ejercicio para piernas y glúteos' },
         { id: '2', nombre: 'Press de Banca', descripcion: 'Ejercicio para pecho y tríceps' },
         { id: '3', nombre: 'Peso Muerto', descripcion: 'Ejercicio para espalda baja y piernas' },
@@ -15,64 +15,81 @@ export default function FlatList_SectionList() {
         { id: '10', nombre: 'Plancha', descripcion: 'Ejercicio para abdominales y core' },
     ]
 
-    const renderItem = ({ item }) => (
-        <View style={styles.item}>
-            <Text style={styles.titulo}>{item.nombre}</Text>
-            <Text style={styles.descripcion}>{item.descripcion}</Text>
-        </View>
-    )
+    // Datos para la lista por secciones
+    const contactos = [
+        { titulo: 'A', data: ['Alejandra', 'Ana la de las tortillas', 'Adele'] },
+        { titulo: 'M', data: ['Mecánico', 'Mi ex', 'Mamá de mi ex'] },
+        { titulo: 'T', data: ['TheWillyrex', 'Tulio Triviño', 'Trebor'] },
+    ]
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Ejemplo de FlatList</Text>
-            <FlatList
-                data={datos}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                ItemSeparatorComponent={() => <View style={styles.separador} />}
-            />
+            <View style={styles.listContainer}>
+                <Text style={styles.titulo}>Lista de Ejercicios</Text>
+                <FlatList
+                    data={ejercicios}
+                    renderItem={({item}) => (
+                        <View style={styles.item}>
+                            <Text style={styles.nombre}>{item.nombre}</Text>
+                            <Text style={styles.descripcion}>{item.descripcion}</Text>
+                        </View>
+                    )}
+                />
+            </View>
+
+            <View style={styles.listContainer}>
+                <Text style={styles.titulo}>Contactos</Text>
+                <SectionList
+                    sections={contactos}
+                    // renderItem: Mostrar elementos individuales en una lista
+                    renderItem={({item}) => (
+                        <Text style={styles.item}>{item}</Text>
+                    )}
+                    // renderSectionHeader = renderizar el cabecero de section list
+                    renderSectionHeader={({section}) => (
+                        <Text style={styles.header}>{section.titulo}</Text>
+                    )}
+                />
+            </View>
         </View>
     )
 }
 
-// Estilos del componente
 const styles = StyleSheet.create({
-    // Contenedor principal de la pantalla
     container: {
-        flex: 1, // Ocupa todo el espacio disponible
-        backgroundColor: '#f5f5f5', // Color de fondo gris claro
-        paddingTop: 20, // Espacio superior
+        flex: 1,
+        padding: 10,
     },
-    // Estilo del encabezado
-    header: {
-        fontSize: 24,
+    listContainer: {
+        flex: 1,
+        marginBottom: 20,
+    },
+    titulo: {
+        fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 15,
-        color: '#333',
+        margin: 10,
     },
-    // Estilo de cada elemento de la lista
     item: {
-        backgroundColor: '#fff', // Fondo blanco
-        padding: 15, // Espacio interno
-        marginHorizontal: 10, // Márgenes laterales
+        padding: 10,
+        backgroundColor: '#f0f0f0',
+        marginVertical: 5,
+        marginHorizontal: 10,
+        borderRadius: 5,
     },
-    // Estilo del título de cada ejercicio
-    titulo: {
-        fontSize: 18,
+    nombre: {
+        fontSize: 16,
         fontWeight: 'bold',
-        color: '#2196F3', // Azul
         marginBottom: 5,
     },
-    // Estilo de la descripción
     descripcion: {
         fontSize: 14,
-        color: '#666', // Gris oscuro
+        color: '#666',
     },
-    // Línea separadora entre elementos
-    separador: {
-        height: 1, // 1 pixel de altura
-        backgroundColor: '#ddd', // Gris claro
-        marginHorizontal: 10,
-    },
+    header: {
+        fontSize: 18,
+        backgroundColor: '#e0e0e0',
+        padding: 10,
+        marginTop: 10,
+    }
 })

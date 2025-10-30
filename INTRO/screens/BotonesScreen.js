@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {View, Text, StyleSheet, Touchable, TouchableOpacity, Switch} from 'react-native'
+import {View, Text, StyleSheet, TouchableOpacity, Switch} from 'react-native'
 
 export default function BotonesScreen() {
     const [prendido, setPrendido] = useState(false);
