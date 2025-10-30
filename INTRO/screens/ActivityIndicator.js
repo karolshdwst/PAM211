@@ -1,7 +1,6 @@
 import { Text, View, StyleSheet, Alert, Platform, ActivityIndicator, Button } from 'react-native'
 import { useState } from 'react'
 
-// Renombrado a ActivityIndicatorScreen para evitar conflicto con el import ActivityIndicator
 export default function ActivityIndicatorScreen() {
 
     const [cargando, setCargando] = useState(false);
