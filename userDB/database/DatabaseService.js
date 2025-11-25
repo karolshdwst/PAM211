@@ -30,7 +30,6 @@ class DatabaseService {
             const data = localStorage.getItem(this.storageKey);
             return data ? JSON.parse(data) : [];
         } else {
-            // Nota: Corregí "SELECT FROM" del PDF a "SELECT * FROM" para asegurar que funcione
             return await this.db.getAllAsync('SELECT * FROM usuarios ORDER BY id DESC');
         }
     }
@@ -54,6 +53,47 @@ class DatabaseService {
             );
             return {
                 id: result.lastInsertRowId,
+                nombre,
+                fecha_creacion: new Date().toISOString()
+            };
+        }
+    }
+
+    // Eliminar usuario (DELETE)
+    async delete(id) {
+        if (Platform.OS === 'web') {
+            const usuarios = await this.getAll();
+            const nuevosUsuarios = usuarios.filter(u => u.id !== id);
+            localStorage.setItem(this.storageKey, JSON.stringify(nuevosUsuarios));
+            return true;
+        } else {
+            await this.db.runAsync(
+                'DELETE FROM usuarios WHERE id = ?',
+                id
+            );
+            return true;
+        }
+    }
+
+    // Editar usuario (UPDATE)
+    async update(id, nombre) {
+        if (Platform.OS === 'web') {
+            const usuarios = await this.getAll();
+            const usuario = usuarios.find(u => u.id === id);
+            if (!usuario) {
+                throw new Error('Usuario no encontrado');
+            }
+            usuario.nombre = nombre;
+            localStorage.setItem(this.storageKey, JSON.stringify(usuarios));
+            return usuario;
+        } else {
+            await this.db.runAsync(
+                'UPDATE usuarios SET nombre = ? WHERE id = ?',
+                nombre,
+                id
+            );
+            return {
+                id,
                 nombre,
                 fecha_creacion: new Date().toISOString()
             };

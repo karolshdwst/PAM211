@@ -10,6 +10,8 @@ export default function InsertUsuarioScreen() {
   const [nombre, setNombre] = useState('');
   const [loading, setLoading] = useState(true);
   const [guardando, setGuardando] = useState(false);
+  const [eliminar, setEliminar] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   // SELECT - cargar usuarios desde la bd
   const cargarUsuarios = useCallback(async () => {
@@ -25,14 +27,22 @@ export default function InsertUsuarioScreen() {
     }
   }, []);
 
-  // INSERT - Agregar nuevo usuario (Paso 6.4)
-  const handleAgregar = async () => {
+  // INSERT / UPDATE - Agregar o Actualizar usuario
+  const handleGuardar = async () => {
     if (guardando) return;
-    
+
     try {
       setGuardando(true);
-      const usuarioCreado = await controller.crearUsuario(nombre);
-      Alert.alert('Usuario Creado', `"${usuarioCreado.nombre}" guardado con ID: ${usuarioCreado.id}`);
+      if (editingId) {
+        // UPDATE
+        await controller.editarUsuario(editingId, nombre);
+        Alert.alert('Usuario Actualizado', `Usuario actualizado correctamente`);
+        setEditingId(null);
+      } else {
+        // INSERT
+        const usuarioCreado = await controller.crearUsuario(nombre);
+        Alert.alert('Usuario Creado', `"${usuarioCreado.nombre}" guardado con ID: ${usuarioCreado.id}`);
+      }
       setNombre('');
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -41,7 +51,61 @@ export default function InsertUsuarioScreen() {
     }
   };
 
-  // Renderizar cada usuario (Paso 6.5)
+  // DELETE - Eliminar usuario
+  const handleEliminar = async (id) => {
+    if (eliminar) return;
+
+    if (Platform.OS === 'web') {
+      if (confirm("¿Estás seguro de que quieres eliminar este usuario?")) {
+        try {
+          setEliminar(true);
+          await controller.eliminarUsuario(id);
+          // Alert.alert('Usuario Eliminado', `Usuario con ID: ${id} eliminado`);
+        } catch (error) {
+          Alert.alert('Error', error.message);
+        } finally {
+          setEliminar(false);
+        }
+      }
+    } else {
+      Alert.alert(
+        "Eliminar Usuario",
+        "¿Estás seguro de que quieres eliminar este usuario?",
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Eliminar",
+            style: "destructive",
+            onPress: async () => {
+              try {
+                setEliminar(true);
+                await controller.eliminarUsuario(id);
+                Alert.alert('Usuario Eliminado', `Usuario con ID: ${id} eliminado`);
+              } catch (error) {
+                Alert.alert('Error', error.message);
+              } finally {
+                setEliminar(false);
+              }
+            }
+          }
+        ]
+      );
+    }
+  };
+
+  // Preparar edición
+  const handleEditar = (usuario) => {
+    setNombre(usuario.nombre);
+    setEditingId(usuario.id);
+  };
+
+  // Cancelar edición
+  const handleCancelarEdicion = () => {
+    setNombre('');
+    setEditingId(null);
+  };
+
+  // Renderizar cada usuario
   const renderUsuario = ({ item, index }) => (
     <View style={styles.userItem}>
       <View style={styles.userNumber}>
@@ -58,6 +122,14 @@ export default function InsertUsuarioScreen() {
           })}
         </Text>
       </View>
+      <View style={styles.actionButtons}>
+        <TouchableOpacity onPress={() => handleEditar(item)} style={[styles.actionButton, styles.editButton]}>
+          <Text style={styles.actionText}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleEliminar(item.id)} style={[styles.actionButton, styles.deleteButton]}>
+          <Text style={styles.actionText}>Eliminar</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -68,7 +140,7 @@ export default function InsertUsuarioScreen() {
       await cargarUsuarios();
     };
     init();
-    
+
     // Avisar los cambios automáticos
     controller.addListener(cargarUsuarios);
 
@@ -88,8 +160,8 @@ export default function InsertUsuarioScreen() {
 
       {/* Zona del INSERT */}
       <View style={styles.insertSection}>
-        <Text style={styles.sectionTitle}> Insertar Usuario</Text>
-        
+        <Text style={styles.sectionTitle}>{editingId ? 'Editar Usuario' : 'Insertar Usuario'}</Text>
+
         <TextInput
           style={styles.input}
           placeholder="Escribe el nombre del usuario"
@@ -98,23 +170,34 @@ export default function InsertUsuarioScreen() {
           editable={!guardando}
         />
 
-        <TouchableOpacity 
-          style={[styles.button, guardando && styles.buttonDisabled]} 
-          onPress={handleAgregar}
-          disabled={guardando} >
+        <View style={styles.formButtons}>
+          <TouchableOpacity
+            style={[styles.button, guardando && styles.buttonDisabled, styles.flexButton]}
+            onPress={handleGuardar}
+            disabled={guardando} >
 
-          <Text style={styles.buttonText}>
-            {guardando ? ' Guardando...' : 'Agregar Usuario'}
-          </Text>
+            <Text style={styles.buttonText}>
+              {guardando ? ' Guardando...' : (editingId ? 'Actualizar Usuario' : 'Agregar Usuario')}
+            </Text>
 
-        </TouchableOpacity>
+          </TouchableOpacity>
+
+          {editingId && (
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton, styles.flexButton]}
+              onPress={handleCancelarEdicion}
+              disabled={guardando} >
+              <Text style={styles.buttonText}>Cancelar</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Zona del SELECT */}
       <View style={styles.selectSection}>
         <View style={styles.selectHeader}>
           <Text style={styles.sectionTitle}>Lista de Usuarios</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.refreshButton}
             onPress={cargarUsuarios} >
             <Text style={styles.refreshText}>Recargar</Text>
@@ -126,7 +209,7 @@ export default function InsertUsuarioScreen() {
             <ActivityIndicator size="large" color="#007AFF" />
             <Text style={styles.loadingText}>Cargando usuarios...</Text>
           </View>
-           ) : (
+        ) : (
           <FlatList
             data={usuarios}
             keyExtractor={(item) => item.id.toString()}
@@ -204,11 +287,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#fafafa',
   },
+  formButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  flexButton: {
+    flex: 1,
+  },
   button: {
     backgroundColor: '#007AFF',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#FF3B30',
   },
   buttonDisabled: {
     backgroundColor: '#ccc',
@@ -243,7 +337,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   userItem: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     backgroundColor: '#f9f9f9',
     padding: 15,
     borderRadius: 8,
@@ -258,7 +352,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginBottom: 10,
   },
   userNumberText: {
     color: '#fff',
@@ -266,7 +360,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   userInfo: {
-    flex: 1,
+    marginBottom: 10,
   },
   userName: {
     fontSize: 16,
@@ -282,6 +376,28 @@ const styles = StyleSheet.create({
   userDate: {
     fontSize: 12,
     color: '#666',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    marginTop: 5,
+  },
+  actionButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  editButton: {
+    backgroundColor: '#FF9500',
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30',
+  },
+  actionText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
   },
   emptyContainer: {
     alignItems: 'center',
