@@ -1,16 +1,33 @@
+/**
+ * PRÁCTICA: MODAL
+ * Esta práctica demuestra el uso del componente Modal para mostrar contenido
+ * sobre la pantalla principal. Los modales son útiles para alertas personalizadas,
+ * formularios, o cualquier contenido que necesite atención del usuario.
+ */
+
 import { Text, View, StyleSheet, Button, Modal } from 'react-native';
 import React, { useState } from 'react';
 
 export default function ModalScreen() {
 
+    // Estado que controla si el modal está visible o no
     const [modalVisible, setModalVisible] = useState(false);
 
     return (
         <View style={styles.container}>
+            {/* Botón para mostrar el modal */}
             <Button title='Mostrar modal' onPress={() => setModalVisible(true)} color='purple'/>
             
-            <Modal animationType='fade' transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(!modalVisible)}>
+            {/* Componente Modal con propiedades importantes: */}
+            <Modal 
+                animationType='fade' // Tipo de animación: 'fade', 'slide', 'none'
+                transparent={true} // Permite ver contenido detrás del modal
+                visible={modalVisible} // Controla si el modal se muestra
+                onRequestClose={() => setModalVisible(!modalVisible)} // Se ejecuta al presionar botón atrás (Android)
+            >
+                {/* Contenedor principal del modal con fondo semi-transparente */}
                 <View style={styles.modalContainer}>
+                    {/* Contenido del modal */}
                     <View style={styles.modalContent}>
                         <Text style={styles.textoModal}>
                             Soy un modal

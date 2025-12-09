@@ -1,26 +1,46 @@
+/**
+ * PRÁCTICA DE REPASO: FORMULARIO DE REGISTRO
+ * Esta práctica integra múltiples conceptos:
+ * - Manejo de múltiples estados (nombre, correo, switch)
+ * - Validación de formularios (campos vacíos, formato de email)
+ * - Expresiones regulares (regex) para validar email
+ * - Alertas condicionales según validaciones
+ * - Combinación de TextInput, Switch y TouchableOpacity
+ */
+
 import React from 'react'
 import { Text, View, StyleSheet, TextInput, Switch, Button, Alert, TouchableOpacity } from 'react-native'
 
 export default function PracticaDeRepaso() {
-    const [prendido, setPrendido] = React.useState(false);
-    const [nombre, setNombre] = React.useState('');
-    const [correo, setCorreo] = React.useState('');
+    // Estados del formulario
+    const [prendido, setPrendido] = React.useState(false); // Switch de términos
+    const [nombre, setNombre] = React.useState(''); // Campo nombre
+    const [correo, setCorreo] = React.useState(''); // Campo correo
 
+    // Función que valida el formato del email usando expresión regular
     const validarEmail = (email) => {
+        // Regex que verifica: algo@algo.algo
         const validCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return validCorreo.test(String(email).toLowerCase());
     }
 
+    // Función que maneja el registro con validaciones
     const handleRegister = () => {
         console.log('Botón presionado');
+        
+        // Validación 1: Verificar que los campos no estén vacíos y email sea válido
         if (!nombre.trim() || !correo.trim() || !validarEmail(correo)) {
             Alert.alert('Error', 'Error campos no completados');
-            return;
+            return; // Detiene la ejecución si falla la validación
         }
+        
+        // Validación 2: Verificar que se aceptaron los términos
         if (!prendido) {
             Alert.alert('Aviso', 'Términos no aceptados');
             return;
         }
+        
+        // Si pasa todas las validaciones, muestra éxito
         Alert.alert('Éxito', 'Registrado exitosamente');
     }
 

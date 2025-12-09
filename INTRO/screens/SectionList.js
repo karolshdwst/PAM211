@@ -1,11 +1,20 @@
+/**
+ * PRÁCTICA: SECTIONLIST BÁSICA
+ * Ejemplo simple de SectionList que muestra una lista de alimentos
+ * organizados por categorías (Frutas, Verduras, Carnes).
+ * SectionList es ideal para listas agrupadas como contactos alfabéticos,
+ * categorías de productos, etc.
+ */
+
 import React from 'react';
 import { StyleSheet, Text, View, SectionList } from 'react-native';
 
 const SectionListExample = () => {
+  // Estructura de datos para SectionList: array de objetos con title y data
   const DATA = [
     {
-      title: 'Frutas',
-      data: ['Manzana', 'Banana', 'Naranja'],
+      title: 'Frutas', // Título de la sección
+      data: ['Manzana', 'Banana', 'Naranja'], // Array de elementos de la sección
     },
     {
       title: 'Verduras',
@@ -20,13 +29,16 @@ const SectionListExample = () => {
   return (
     <View style={styles.container}>
       <SectionList
-        sections={DATA}
-        keyExtractor={(item, index) => item + index}
+        sections={DATA} // Array de secciones
+        keyExtractor={(item, index) => item + index} // Genera key única para cada elemento
+        // Renderiza cada elemento individual
         renderItem={({ item }) => (
           <View style={styles.item}>
             <Text style={styles.title}>{item}</Text>
           </View>
         )}
+        // Renderiza el encabezado de cada sección
+        // Desestructuramos title del objeto section
         renderSectionHeader={({ section: { title } }) => (
           <Text style={styles.header}>{title}</Text>
         )}

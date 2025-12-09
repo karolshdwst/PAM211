@@ -1,7 +1,15 @@
+/**
+ * PRÁCTICA: FLATLIST Y SECTIONLIST
+ * Esta práctica demuestra dos componentes importantes para mostrar listas:
+ * - FlatList: para listas simples y eficientes (renderiza solo elementos visibles)
+ * - SectionList: para listas organizadas por secciones con encabezados
+ */
+
 import { Text, StyleSheet, View, FlatList, SectionList } from 'react-native'
 
 export default function ListScreen() {
-    // Datos para la lista simple
+    // Array de objetos para la lista simple
+    // Cada objeto representa un ejercicio con id, nombre y descripción
     const ejercicios = [
         { id: '1', nombre: 'Sentadillas', descripcion: 'Ejercicio para piernas y glúteos' },
         { id: '2', nombre: 'Press de Banca', descripcion: 'Ejercicio para pecho y tríceps' },
@@ -16,6 +24,7 @@ export default function ListScreen() {
     ]
 
     // Datos para la lista por secciones
+    // Cada objeto tiene un 'titulo' (para el encabezado) y 'data' (array de elementos)
     const contactos = [
         { titulo: 'A', data: ['Alejandra', 'Ana la de las tortillas', 'Adele'] },
         { titulo: 'M', data: ['Mecánico', 'Mi ex', 'Mamá de mi ex'] },
@@ -26,8 +35,11 @@ export default function ListScreen() {
         <View style={styles.container}>
             <View style={styles.listContainer}>
                 <Text style={styles.titulo}>Lista de Ejercicios</Text>
+                {/* FlatList: componente optimizado para listas largas */}
                 <FlatList
-                    data={ejercicios}
+                    data={ejercicios} // Array de datos a renderizar
+                    // renderItem: función que define cómo renderizar cada elemento
+                    // item contiene el objeto actual del array
                     renderItem={({item}) => (
                         <View style={styles.item}>
                             <Text style={styles.nombre}>{item.nombre}</Text>
@@ -39,13 +51,15 @@ export default function ListScreen() {
 
             <View style={styles.listContainer}>
                 <Text style={styles.titulo}>Contactos</Text>
+                {/* SectionList: lista organizada por secciones con encabezados */}
                 <SectionList
-                    sections={contactos}
-                    // renderItem: Mostrar elementos individuales en una lista
+                    sections={contactos} // Array de objetos con titulo y data
+                    // renderItem: Mostrar elementos individuales dentro de cada sección
                     renderItem={({item}) => (
                         <Text style={styles.item}>{item}</Text>
                     )}
-                    // renderSectionHeader = renderizar el cabecero de section list
+                    // renderSectionHeader: renderizar el encabezado de cada sección
+                    // section contiene el objeto completo con titulo y data
                     renderSectionHeader={({section}) => (
                         <Text style={styles.header}>{section.titulo}</Text>
                     )}

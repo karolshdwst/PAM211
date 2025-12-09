@@ -1,10 +1,22 @@
+/**
+ * PRÁCTICA: SCROLLVIEW
+ * Esta práctica demuestra el uso de ScrollView para crear contenido desplazable.
+ * ScrollView es útil cuando tienes contenido que excede el tamaño de la pantalla.
+ * Nota: Para listas largas es mejor usar FlatList por rendimiento.
+ */
+
 import { Text, StyleSheet, View, ScrollView } from 'react-native'
 import React from 'react'
 
 export default function ScrollViewScreen(){
         return (
             <View style={styles.container}>
-                <ScrollView style={styles.scrollArea} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={true}>
+                {/* ScrollView permite desplazamiento vertical u horizontal */}
+                <ScrollView 
+                    style={styles.scrollArea} // Estilo del contenedor scroll
+                    contentContainerStyle={styles.scrollContent} // Estilo del contenido interno
+                    showsVerticalScrollIndicator={true} // Muestra la barra de desplazamiento
+                >
                     
                     <Text style={styles.title}>Lorem</Text>
                     <Text style={styles.item}>Aquí va a ir el lorem papus</Text>

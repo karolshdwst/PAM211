@@ -1,5 +1,14 @@
+/**
+ * MENÚ PRINCIPAL DE PRÁCTICAS
+ * Este componente funciona como un menú de navegación para todas las prácticas.
+ * Utiliza un estado para controlar qué pantalla mostrar y un switch para
+ * renderizar el componente correspondiente. Es una forma simple de navegación
+ * sin usar React Navigation.
+ */
+
 import { Text, StyleSheet, View, Button } from 'react-native'
 import React, { useState } from 'react'
+// Importamos todas las pantallas de prácticas
 import BotonesScreen from './BotonesScreen';
 import ContadorScreen from './ContadorScreen';
 import TextInput_Alert from './TextInput_Alert';
@@ -12,8 +21,10 @@ import PracticaDeRepaso from './PracticaDeRepaso';
 import SectionList from './SectionList';
 
 export default function MenuScreen() {
+    // Estado que almacena el nombre de la pantalla actual
     const [screen, setScreen] = useState('menu');
 
+    // Switch que decide qué componente renderizar según el estado 'screen'
     switch(screen){
         case 'contador':
             return <ContadorScreen></ContadorScreen>
@@ -40,7 +51,9 @@ export default function MenuScreen() {
             return (
                 <View style={styles.container}>
                     <Text>Menú de prácticas</Text>
+                    {/* Contenedor con todos los botones del menú */}
                     <View style={styles.botonesContainer}>
+                        {/* Cada botón cambia el estado 'screen' para mostrar la práctica correspondiente */}
                         <Button onPress={() => setScreen('contador')} title='Practica Contador'></Button>
                         <Button onPress={() => setScreen('botones')} title='Practica Botones'></Button>
                         <Button onPress={() => setScreen('textinput')} title='Practica TextInput & Alert'></Button>
