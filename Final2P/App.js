@@ -1,8 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState, useEffect, useCallback } from 'react';
-import { Dimensions, StyleSheet, Text, View,  ImageBackground, FlatList, Platform, Button, Alert} from 'react-native';
+import { useState, useEffect } from 'react';
+import { Dimensions, StyleSheet, Text, View,  ImageBackground, FlatList, Button, Alert} from 'react-native';
 import { ScrollView } from 'react-native-web';
-import * as SplashScreen from 'expo-splash-screen';
 
 
 const BackgroundImage = require('../Final2P/assets/fondoFinal.jpg');
@@ -38,24 +37,33 @@ const renderItemm = ({ item }) => (
 
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
   useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
+        const timer = setTimeout(() => {
+            setShowSplash(false);
+        }, 3000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if(showSplash) {
+        return (
+            <ImageBackground 
+                source={BackgroundImage}
+                style={styles.background}
+                resizeMode='cover'
+            >
+                <View style={styles.overlay}>
+                    <Text style={styles.title}>CocinApp</Text>
+                </View>
+            </ImageBackground>
+        );
     }
-    prepare();
-  }, []);
-
-  const onLayoutRootView = useCallback(async () => {
-    await SplashScreen.hideAsync();
-  }, []);
-
-
   return (
     <ImageBackground
       source={BackgroundImage}
       style={styles.mainScreen}
       resizeMode='center'
-      onLayout={onLayoutRootView}
     >
       <View style={styles.container}>
         <Text style={styles.text}>Mis recetas</Text>
@@ -89,8 +97,8 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
     backgroundColor: 'white',
-    borderRadius: '4px',
-    padding: '5px'
+    borderRadius: 4,
+    padding: 5
   },
   item: {
         padding: 10,
@@ -111,6 +119,23 @@ const styles = StyleSheet.create({
     descripcion: {
         fontSize: 14,
         color: '#666',
+    },
+    background: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    overlay: {
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        padding: 20,
+        borderRadius: 10,
+    },
+    title: {
+        fontSize: 50,
+        color: 'white',
+        fontWeight: 'bold',
     },
 
 });
